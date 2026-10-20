@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "jsx": "react",
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": false,
+    "lib": ["es2017", "dom"],
+    "sourceMap": true,
+    "rootDir": ".",
+    "outDir": "lib",
+    "typeRoots": ["./types/", "./node_modules/@types"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "lib"]
+}

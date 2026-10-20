@@ -1,0 +1,26 @@
+{
+  "name": "mailspring-inbox-assist",
+  "main": "./lib/main.js",
+  "version": "1.0.0",
+  "author": "Yuehmin Lin",
+  "scripts": {
+    "build": "webpack",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "mailspring": ">=1.16.0"
+  },
+  "windowTypes": {
+    "default": true
+  },
+  "description": "Mailspring Inbox Assist: unread / starred thread filter and AI email summaries with any OpenAI-compatible model",
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/react": "^16.14.68",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1",
+    "webpack-cli": "^6.0.1"
+  },
+  "license": "MIT"
+}
