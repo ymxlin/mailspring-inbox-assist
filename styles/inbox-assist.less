@@ -6,16 +6,30 @@
   -webkit-app-region: no-drag;
 }
 
-// ButtonDropdown already carries the theme's button/menu styling; only spacing and
-// colors are set here, from theme variables so light/dark themes both work
+// The toolbar doesn't center its children: each item sets its own offset and height.
+// These mirror .thread-search-bar (margin-top 5px, height 23px) so the dropdown lines up
+// with the search field, and reuse its field look. Colors come from theme variables.
 .inbox-assist-filter {
-  margin: 0 4px;
+  flex-shrink: 0;
+  margin: 5px 0 0 @spacing-half;
   font-size: 12px;
   color: @text-color;
 
   .only-item {
     display: flex;
     align-items: center;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 @padding-xs-horizontal;
+    background: @input-bg;
+    color: @text-color;
+    border: 0;
+    border-radius: @border-radius-base;
+    box-shadow: @shadow-border;
+
+    img.content-mask {
+      background-color: currentColor;
+    }
   }
 
   .inbox-assist-filter-option {
@@ -52,6 +66,7 @@
   color: @text-color;
   -webkit-user-select: text;
   user-select: text;
+  outline: none; // it's focusable only so the popover can detect blur
 
   .inbox-assist-summary-header {
     font-weight: 600;

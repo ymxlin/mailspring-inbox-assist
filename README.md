@@ -59,7 +59,7 @@ Then in Mailspring: **Developer → Install a Plugin…** and pick this folder,
 or copy/link the folder into `%APPDATA%\Mailspring\packages\`. Restart Mailspring
 (or Developer → Reload) after each rebuild.
 
-Shortcut for developers: create a link to your project folder under Mailspring plugin folder. To reload, go to Developer -> Reload.
+Shortcut for developers: create a symlink to your project folder under Mailspring plugin folder, then do a developer reload.
 
 ## Layout
 

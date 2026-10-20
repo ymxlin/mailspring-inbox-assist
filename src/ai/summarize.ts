@@ -1,17 +1,25 @@
 import {DatabaseStore, Message, MessageStore, QuotedHTMLTransformer, Thread} from "mailspring-exports";
 import {aiConfig, llmSettings} from "./ai-settings";
 import {chatCompletion} from "./llm-client";
+import {SummaryCache} from "./summary-cache";
 
 export interface SummaryResult {
     summary: string;
     model: string;
     truncated: boolean;
+    cached?: boolean;
 }
+
+const cache = new SummaryCache<SummaryResult>();
 
 // Summarizes a thread by id, or the thread open in the message list when no id is given.
 // Messages are loaded from the database (with bodies) so this works for threads that
 // aren't open, e.g. from the thread list's right-click menu.
-export async function summarizeThread(threadId: string = MessageStore.threadId()): Promise<SummaryResult> {
+// The last few summaries are cached; `force` (Retry) skips the cache.
+export async function summarizeThread(
+    threadId: string = MessageStore.threadId(),
+    {force = false} = {},
+): Promise<SummaryResult> {
     if (!threadId) {
         throw new Error("No email is open.");
     }
@@ -27,6 +35,21 @@ export async function summarizeThread(threadId: string = MessageStore.threadId()
     }
 
     const config = aiConfig();
+
+    // a new message, or different model / endpoint / prompt / length, invalidates the entry
+    const last = messages[messages.length - 1];
+    const fingerprint = [
+        messages.length, last.id, last.version,
+        config.baseUrl, config.model, config.systemPrompt, config.maxChars,
+    ].join("\u0000");
+
+    if (!force) {
+        const hit = cache.get(threadId, fingerprint);
+        if (hit) {
+            return {...hit, cached: true};
+        }
+    }
+
     const {text, truncated} = threadToText(thread, messages, config.maxChars);
     const settings = await llmSettings();
 
@@ -35,7 +58,9 @@ export async function summarizeThread(threadId: string = MessageStore.threadId()
         {role: "user", content: text},
     ]);
 
-    return {summary, model: settings.model, truncated};
+    const result = {summary, model: settings.model, truncated};
+    cache.set(threadId, fingerprint, result);
+    return result;
 }
 
 function threadToText(thread: any, messages: any[], maxChars: number) {
