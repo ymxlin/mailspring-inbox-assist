@@ -3,6 +3,14 @@
   "main": "./lib/main.js",
   "version": "1.0.1",
   "author": "Yuehmin Lin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ymxlin/mailspring-inbox-assist"
+  },
+  "homepage": "https://github.com/ymxlin/mailspring-inbox-assist#readme",
+  "bugs": {
+    "url": "https://github.com/ymxlin/mailspring-inbox-assist/issues"
+  },
   "scripts": {
     "build": "webpack",
     "typecheck": "tsc --noEmit"
