@@ -61,7 +61,8 @@ export default class SummaryPopover extends React.Component<Props, State> {
         if (!result) {
             return;
         }
-        require("electron").clipboard.writeText(result.summary);
+        // Mailspring's renderer code reaches the clipboard through @electron/remote
+        require("@electron/remote").clipboard.writeText(result.summary);
         this.setState({copied: true});
     };
 

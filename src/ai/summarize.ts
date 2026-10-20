@@ -55,16 +55,17 @@ function threadToText(thread: any, messages: any[], maxChars: number) {
         ].filter((line) => line !== null).join("\n");
     });
 
-    let text = `Subject: ${thread.subject || "(no subject)"}\n\n${parts.join("\n\n")}`;
+    const header = `Subject: ${thread.subject || "(no subject)"}\n\n`;
+    let body = parts.join("\n\n");
     let truncated = false;
 
-    // keep the end of the thread: the latest messages matter most
-    if (text.length > maxChars) {
-        text = `[earlier part of the thread omitted]\n…${text.slice(text.length - maxChars)}`;
+    // keep the subject and the end of the thread: the latest messages matter most
+    if (body.length > maxChars) {
+        body = `[earlier part of the thread omitted]\n…${body.slice(body.length - maxChars)}`;
         truncated = true;
     }
 
-    return {text, truncated};
+    return {text: header + body, truncated};
 }
 
 function formatContact(contact: any) {

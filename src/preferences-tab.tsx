@@ -26,7 +26,7 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
 
     async componentDidMount() {
         const apiKey = await getApiKey();
-        this.setState({apiKey});
+        this.setState({apiKey, keySaved: true});
     }
 
     _set = (stateKey: keyof State, configKey: string) => (event: any) => {
@@ -51,7 +51,12 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
         this.setState({provider: preset.id, baseUrl: preset.baseUrl, model: preset.model});
     };
 
+    // also runs on blur: Test connection uses the typed key, summaries use the saved one,
+    // so an unsaved key would pass the test and then fail later
     _saveKey = async () => {
+        if (this.state.keySaved) {
+            return;
+        }
         await setApiKey(this.state.apiKey.trim());
         this.setState({keySaved: true});
     };
@@ -103,7 +108,8 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
                     <label>API key {preset && !preset.needsKey ? "(usually not needed)" : ""}</label>
                     <div className="inbox-assist-row">
                         <input type="password" value={apiKey} placeholder="stored in the system keychain"
-                               onChange={(e) => this.setState({apiKey: e.target.value, keySaved: false})}/>
+                               onChange={(e) => this.setState({apiKey: e.target.value, keySaved: false})}
+                               onBlur={this._saveKey}/>
                         <button className="btn" onClick={this._saveKey}>{keySaved ? "Saved" : "Save key"}</button>
                     </div>
 

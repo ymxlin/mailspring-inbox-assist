@@ -23,6 +23,7 @@ module.exports = {
     externals: {
         "mailspring-exports": "commonjs mailspring-exports",
         "mailspring-component-kit": "commonjs mailspring-component-kit",
+        "@electron/remote": "commonjs @electron/remote",
     },
     devtool: "source-map",
 };

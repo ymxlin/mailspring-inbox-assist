@@ -10,10 +10,12 @@ import InboxAssistPreferences from "./preferences-tab";
 const threadFilters = new ThreadFiltersFeature();
 const threadContextMenu = new ThreadContextMenuFeature();
 
-// every *.Toolbar location renders inside that column's div.item-container
-const TOOLBAR_ITEMS: [any, any][] = [
-    [FilterSelect, WorkspaceStore.Location.ThreadList.Toolbar],
-    [SummarizeButton, WorkspaceStore.Location.MessageList.Toolbar],
+// Registered by location: rendered inside that toolbar column's div.item-container.
+// Registered by role: rendered inside Mailspring's thread-actions button group
+// (Archive / Trash / Star) in the message view.
+const COMPONENTS: [any, any][] = [
+    [FilterSelect, {location: WorkspaceStore.Location.ThreadList.Toolbar}],
+    [SummarizeButton, {role: "MessageList:ThreadActionsToolbarButton"}],
 ];
 
 const preferencesTab = new PreferencesUIStore.TabItem({
@@ -29,8 +31,8 @@ export function activate() {
     threadFilters.enable();
     threadContextMenu.enable();
 
-    for (const [component, location] of TOOLBAR_ITEMS) {
-        ComponentRegistry.register(component, {location});
+    for (const [component, options] of COMPONENTS) {
+        ComponentRegistry.register(component, options);
     }
 
     PreferencesUIStore.registerPreferencesTab(preferencesTab);
@@ -49,7 +51,7 @@ export function deactivate() {
     }
     _disposers = [];
 
-    for (const [component] of TOOLBAR_ITEMS) {
+    for (const [component] of COMPONENTS) {
         ComponentRegistry.unregister(component);
     }
 
