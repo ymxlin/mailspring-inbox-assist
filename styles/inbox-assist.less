@@ -197,6 +197,26 @@
 
   a { cursor: pointer; }
 
+  section + section {
+    margin-top: 24px;
+  }
+
+  .inbox-assist-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+
+    input { margin: 0; }
+
+    // override the block-level field labels above
+    label {
+      display: inline;
+      margin: 0;
+      font-weight: normal;
+    }
+  }
+
   .inbox-assist-row {
     display: flex;
     gap: 8px;

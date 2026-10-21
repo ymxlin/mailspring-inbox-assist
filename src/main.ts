@@ -6,6 +6,7 @@ import FilterSelect from "./filter-select";
 import SummarizeButton from "./ai/summarize-button";
 import {ThreadContextMenuFeature} from "./ai/thread-context-menu";
 import InboxAssistPreferences from "./preferences-tab";
+import ScrollToLatest from "./scroll-to-latest";
 
 const threadFilters = new ThreadFiltersFeature();
 const threadContextMenu = new ThreadContextMenuFeature();
@@ -13,9 +14,11 @@ const threadContextMenu = new ThreadContextMenuFeature();
 // Registered by location: rendered inside that toolbar column's div.item-container.
 // Registered by role: rendered inside Mailspring's thread-actions button group
 // (Archive / Trash / Star) in the message view.
+// MessageListHeaders components render inside the reading pane's scroll region.
 const COMPONENTS: [any, any][] = [
     [FilterSelect, {location: WorkspaceStore.Location.ThreadList.Toolbar}],
     [SummarizeButton, {role: "MessageList:ThreadActionsToolbarButton"}],
+    [ScrollToLatest, {role: "MessageListHeaders"}],
 ];
 
 const preferencesTab = new PreferencesUIStore.TabItem({

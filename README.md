@@ -1,7 +1,7 @@
 # Mailspring Inbox Assist
 
-A Mailspring plugin that adds an unread / starred thread filter and AI email summaries
-(cloud, mainland-China or local OpenAI-compatible models).
+A Mailspring plugin that adds an unread / starred thread filter, AI email summaries
+(cloud, mainland-China or local OpenAI-compatible models), and opens conversations at the latest message.
 
 ## Features
 
@@ -14,6 +14,14 @@ A Mailspring plugin that adds an unread / starred thread filter and AI email sum
 - **✨ Summarize** (next to Archive / Trash / Star when an email is open): summarizes the open thread with any OpenAI-compatible `/chat/completions` endpoint and shows
   the result in a popover (Copy / Retry / Close, Esc closes). Markdown and simple HTML in the reply are rendered.
 - **Right-click a thread** in the list → **✨ Summarize with AI**: same summary without opening the email.
+- The last 3 summaries are cached in memory: reopening one is instant. Retry regenerates it, and a new
+  message or a settings change refreshes it automatically.
+
+### Reading pane
+- **Scroll to latest**: opening a conversation scrolls the reading pane to the newest message instead of
+  the oldest one at the top. On by default; switch it off in Preferences → Inbox Assist → *Reading*.
+  It stops following as soon as you scroll, click or type, and never jumps when a new message arrives
+  while you're reading.
 
 ## AI setup
 
@@ -68,6 +76,7 @@ src/main.ts                    activate/deactivate, registers everything
 src/thread-filters-feature.ts  wraps perspective.threads() to apply the unread / starred filter
 src/thread-list-refresh.ts     re-runs the thread list query when the filter changes
 src/filter-select.tsx          All / Unread / Starred dropdown (ButtonDropdown + Menu)
+src/scroll-to-latest.tsx       scrolls an opened conversation to its newest message
 src/preferences-tab.tsx        Preferences → Inbox Assist
 src/ai/                        providers, OpenAI-compatible client, summarize + popover
 styles/inbox-assist.less       auto-loaded by Mailspring

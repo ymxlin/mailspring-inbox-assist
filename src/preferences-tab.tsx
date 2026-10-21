@@ -1,5 +1,5 @@
 import {React} from "mailspring-exports";
-import {CONFIG_KEYS} from "./config-keys";
+import {CONFIG_KEYS, scrollToLatestEnabled} from "./config-keys";
 import {aiConfig, getApiKey, setApiKey} from "./ai/ai-settings";
 import {chatCompletion} from "./ai/llm-client";
 import {DEFAULT_MAX_CHARS, DEFAULT_SYSTEM_PROMPT, PROVIDERS, providerById} from "./ai/providers";
@@ -13,6 +13,7 @@ interface State {
     apiKey: string;
     keySaved: boolean;
     testStatus: string;
+    scrollToLatest: boolean;
 }
 
 export default class InboxAssistPreferences extends React.Component<{}, State> {
@@ -21,8 +22,20 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
 
     constructor(props: {}) {
         super(props);
-        this.state = {...aiConfig(), apiKey: "", keySaved: false, testStatus: ""};
+        this.state = {
+            ...aiConfig(),
+            apiKey: "",
+            keySaved: false,
+            testStatus: "",
+            scrollToLatest: scrollToLatestEnabled(),
+        };
     }
+
+    _onScrollToLatestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const scrollToLatest = event.target.checked;
+        AppEnv.config.set(CONFIG_KEYS.SCROLL_TO_LATEST, scrollToLatest);
+        this.setState({scrollToLatest});
+    };
 
     async componentDidMount() {
         const apiKey = await getApiKey();
@@ -80,11 +93,25 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
     };
 
     render() {
-        const {provider, baseUrl, model, systemPrompt, maxChars, apiKey, keySaved, testStatus} = this.state;
+        const {provider, baseUrl, model, systemPrompt, maxChars, apiKey, keySaved, testStatus, scrollToLatest} = this.state;
         const preset = providerById(provider);
 
         return (
             <div className="container-inbox-assist">
+                <section>
+                    <h6>Reading</h6>
+                    <div className="inbox-assist-checkbox">
+                        <input id="inbox-assist-scroll-to-latest" type="checkbox"
+                               checked={scrollToLatest} onChange={this._onScrollToLatestChange}/>
+                        <label htmlFor="inbox-assist-scroll-to-latest">
+                            Scroll to the latest message when opening a conversation
+                        </label>
+                    </div>
+                    <p className="inbox-assist-hint">
+                        Off: conversations open at the top, with the oldest message (Mailspring's default).
+                    </p>
+                </section>
+
                 <section>
                     <h6>AI summary</h6>
                     <p className="inbox-assist-hint">
