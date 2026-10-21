@@ -1,5 +1,5 @@
 import {React} from "mailspring-exports";
-import {CONFIG_KEYS, scrollToLatestEnabled} from "./config-keys";
+import {CONFIG_KEYS, scrollToLatestEnabled, threadCountEnabled} from "./config-keys";
 import {aiConfig, getApiKey, setApiKey} from "./ai/ai-settings";
 import {chatCompletion} from "./ai/llm-client";
 import {DEFAULT_MAX_CHARS, DEFAULT_SYSTEM_PROMPT, PROVIDERS, providerById} from "./ai/providers";
@@ -14,6 +14,7 @@ interface State {
     keySaved: boolean;
     testStatus: string;
     scrollToLatest: boolean;
+    threadCount: boolean;
 }
 
 export default class InboxAssistPreferences extends React.Component<{}, State> {
@@ -28,14 +29,16 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
             keySaved: false,
             testStatus: "",
             scrollToLatest: scrollToLatestEnabled(),
+            threadCount: threadCountEnabled(),
         };
     }
 
-    _onScrollToLatestChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const scrollToLatest = event.target.checked;
-        AppEnv.config.set(CONFIG_KEYS.SCROLL_TO_LATEST, scrollToLatest);
-        this.setState({scrollToLatest});
-    };
+    _toggle = (stateKey: "scrollToLatest" | "threadCount", configKey: string) =>
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const value = event.target.checked;
+            AppEnv.config.set(configKey, value);
+            this.setState({[stateKey]: value} as any);
+        };
 
     async componentDidMount() {
         const apiKey = await getApiKey();
@@ -93,7 +96,10 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
     };
 
     render() {
-        const {provider, baseUrl, model, systemPrompt, maxChars, apiKey, keySaved, testStatus, scrollToLatest} = this.state;
+        const {
+            provider, baseUrl, model, systemPrompt, maxChars, apiKey, keySaved, testStatus,
+            scrollToLatest, threadCount,
+        } = this.state;
         const preset = providerById(provider);
 
         return (
@@ -101,8 +107,18 @@ export default class InboxAssistPreferences extends React.Component<{}, State> {
                 <section>
                     <h6>Reading</h6>
                     <div className="inbox-assist-checkbox">
+                        <input id="inbox-assist-thread-count" type="checkbox"
+                               checked={threadCount}
+                               onChange={this._toggle("threadCount", CONFIG_KEYS.THREAD_COUNT)}/>
+                        <label htmlFor="inbox-assist-thread-count">
+                            Show a message-count badge on conversations in the thread list
+                        </label>
+                    </div>
+
+                    <div className="inbox-assist-checkbox">
                         <input id="inbox-assist-scroll-to-latest" type="checkbox"
-                               checked={scrollToLatest} onChange={this._onScrollToLatestChange}/>
+                               checked={scrollToLatest}
+                               onChange={this._toggle("scrollToLatest", CONFIG_KEYS.SCROLL_TO_LATEST)}/>
                         <label htmlFor="inbox-assist-scroll-to-latest">
                             Scroll to the latest message when opening a conversation
                         </label>

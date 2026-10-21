@@ -58,6 +58,42 @@
   white-space: nowrap;
 }
 
+// Thread list: participants + message-count badge. The participants keep their own
+// ellipsis; the badge never shrinks, so it stays visible however narrow the column is.
+.inbox-assist-participants {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+
+  > .participants {
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+}
+
+.inbox-assist-thread-count {
+  flex: none;
+  margin-left: 6px;
+  padding: 0 5px;
+  min-width: 16px;
+  height: 15px;
+  line-height: 13px;
+  font-size: 10px;
+  text-align: center;
+  // currentColor keeps it readable on normal, hovered and selected (inverted) rows
+  color: inherit;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  opacity: 0.55;
+
+  &.unread {
+    opacity: 1;
+    font-weight: 600;
+  }
+}
+
 .inbox-assist-summary {
   width: 420px;
   max-height: 480px;

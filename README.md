@@ -9,6 +9,9 @@ A Mailspring plugin that adds an unread / starred thread filter, AI email summar
 - **Filter dropdown** (with icons, themed): `All mail` / `Unread only` / `Starred only`.
   Applies to folders, labels and search results. While a filter is on, the dropdown is highlighted.
   With *Unread only*, a thread drops out of the list once you open it (it becomes read), same as Gmail.
+- **Message-count badge**: conversations with 2+ messages get a small count pill right after the participants,
+  so threads are obvious at a glance (Mailspring's own " (N)" is the first thing cut off by "…").
+  Bold when the conversation has unread mail. Toggle in Preferences → Inbox Assist → *Reading*.
 
 ### Message toolbar
 - **✨ Summarize** (next to Archive / Trash / Star when an email is open): summarizes the open thread with any OpenAI-compatible `/chat/completions` endpoint and shows
@@ -48,7 +51,9 @@ Preferences → **Inbox Assist**:
 - **Right-click item depends on Mailspring internals.** Mailspring has no public API for the thread list's
   context menu, so the plugin extends it directly. If a Mailspring update changes that code, the
   **Summarize with AI** item disappears (a warning is logged to the console); everything else keeps working.
-- **Changing the filter deselects the open email**, because the thread list reloads.
+- **Message-count badge depends on Mailspring internals** the same way: it wraps the thread list's
+  participants component. If an update changes it, the badge disappears (a console warning is logged).
+- **Changing the filter or the badge setting deselects the open email**, because the thread list reloads.
 - **Summaries can be steered by email content.** An email can contain text aimed at the model (prompt injection).
   The reply is rendered safely (no HTML or scripts, only `http(s)` / `mailto` links), but treat summaries of
   untrusted mail with care.
@@ -77,6 +82,7 @@ src/thread-filters-feature.ts  wraps perspective.threads() to apply the unread /
 src/thread-list-refresh.ts     re-runs the thread list query when the filter changes
 src/filter-select.tsx          All / Unread / Starred dropdown (ButtonDropdown + Menu)
 src/scroll-to-latest.tsx       scrolls an opened conversation to its newest message
+src/thread-count-badge.tsx     message-count pill next to thread participants
 src/preferences-tab.tsx        Preferences → Inbox Assist
 src/ai/                        providers, OpenAI-compatible client, summarize + popover
 styles/inbox-assist.less       auto-loaded by Mailspring

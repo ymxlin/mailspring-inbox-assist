@@ -5,6 +5,8 @@ export const CONFIG_KEYS = {
     THREAD_FILTER: `${PREFIX}.threadFilter`,
     // open threads scrolled to the latest message (on unless turned off)
     SCROLL_TO_LATEST: `${PREFIX}.scrollToLatest`,
+    // message-count badge on conversations in the thread list (on unless turned off)
+    THREAD_COUNT: `${PREFIX}.threadCountBadge`,
 
     AI_PROVIDER: `${PREFIX}.ai.provider`,
     AI_BASE_URL: `${PREFIX}.ai.baseUrl`,
@@ -14,7 +16,7 @@ export const CONFIG_KEYS = {
 };
 
 // keys that change which threads are listed, so the thread list must refresh
-export const LIST_KEYS = [CONFIG_KEYS.THREAD_FILTER];
+export const LIST_KEYS = [CONFIG_KEYS.THREAD_FILTER, CONFIG_KEYS.THREAD_COUNT];
 
 // stored in the OS keychain via KeyManager, never in config.json
 export const API_KEY_SECRET_NAME = `${PREFIX}.ai.apiKey`;
@@ -24,6 +26,10 @@ export type ThreadFilter = "all" | "unread" | "starred";
 // defaults to on: only an explicit `false` turns it off
 export function scrollToLatestEnabled(): boolean {
     return AppEnv.config.get(CONFIG_KEYS.SCROLL_TO_LATEST) !== false;
+}
+
+export function threadCountEnabled(): boolean {
+    return AppEnv.config.get(CONFIG_KEYS.THREAD_COUNT) !== false;
 }
 
 export function threadFilter(): ThreadFilter {

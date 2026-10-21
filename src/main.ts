@@ -7,9 +7,11 @@ import SummarizeButton from "./ai/summarize-button";
 import {ThreadContextMenuFeature} from "./ai/thread-context-menu";
 import InboxAssistPreferences from "./preferences-tab";
 import ScrollToLatest from "./scroll-to-latest";
+import {ThreadCountBadgeFeature} from "./thread-count-badge";
 
 const threadFilters = new ThreadFiltersFeature();
 const threadContextMenu = new ThreadContextMenuFeature();
+const threadCountBadge = new ThreadCountBadgeFeature();
 
 // Registered by location: rendered inside that toolbar column's div.item-container.
 // Registered by role: rendered inside Mailspring's thread-actions button group
@@ -33,6 +35,7 @@ let _disposers: any[] = [];
 export function activate() {
     threadFilters.enable();
     threadContextMenu.enable();
+    threadCountBadge.enable();
 
     for (const [component, options] of COMPONENTS) {
         ComponentRegistry.register(component, options);
@@ -61,6 +64,7 @@ export function deactivate() {
     PreferencesUIStore.unregisterPreferencesTab(preferencesTab.tabId);
 
     threadContextMenu.disable();
+    threadCountBadge.disable();
     threadFilters.disable();
     refreshThreadList();
 }
